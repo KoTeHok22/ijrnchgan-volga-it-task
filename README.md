@@ -11,7 +11,8 @@
 Вы великолепны!
 
 # Доступ по API:  
-Для доступа по API на защищенные адреса в cookies нужно указать access_token, в headers 'X-Requested-With': 'XMLHttpRequest',
+Для доступа по API нужно в header указать 'X-Requested-With': 'XMLHttpRequest',  
+А доступа по API на защищенные адреса в cookies нужно указать access_token
 ```python
 cookies = {
     'access_token': 'token',
