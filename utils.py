@@ -186,19 +186,19 @@ def create_tabl():
         database = MainDataBase(conn)
 
         pass_hash = generate_password_hash('user')
-        database.add_user('user', 'Иванов', 'Иван', 'Иванович', 'user@user.ru', pass_hash)
+        database.add_user('user', 'Иван', 'Иванов', 'Иванович', 'user@user.ru', pass_hash)
         database.update_user_role(1, 'user')
 
         pass_hash = generate_password_hash('doctor')
-        database.add_user('doctor', 'Иванов', 'Иван', 'Иванович', 'doctor@doctor.ru', pass_hash)
+        database.add_user('doctor', 'Иван', 'Иванов', 'Иванович', 'doctor@doctor.ru', pass_hash)
         database.update_user_role(2, 'doctor')
 
         pass_hash = generate_password_hash('manager')
-        database.add_user('manager', 'Иванов', 'Иван', 'Иванович', 'manager@manager.ru', pass_hash)
+        database.add_user('manager', 'Иван', 'Иванов', 'Иванович', 'manager@manager.ru', pass_hash)
         database.update_user_role(3, 'manager')
 
         pass_hash = generate_password_hash('admin')
-        database.add_user('admin', 'Иванов', 'Иван', 'Иванович', 'admin@admin.ru', pass_hash)
+        database.add_user('admin', 'Иван', 'Иванов', 'Иванович', 'admin@admin.ru', pass_hash)
         database.update_user_role(4, 'admin')
 
         data = {
