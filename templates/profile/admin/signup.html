@@ -1,0 +1,55 @@
+{% extends "profile/profile_base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/signin.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="center">
+        <h1> Регистрация</h1>
+        <form method="post" action="{{ url_for('accounts.api_accounts') }}">
+            {{ form.hidden_tag() }}
+            <div class="txt_field">
+                {{ form.username(class="input", required=True) }}
+                <label>Имя пользователя:</label>
+                <span></span>
+            </div>
+            <div class="txt_field">
+                {{ form.last_name(class="input", required=True) }}
+                <label>Фамилия:</label>
+                <span></span>
+            </div>
+            <div class="txt_field">
+                {{ form.first_name(class="input", required=True) }}
+                <label>Имя:</label>
+                <span></span>
+            </div>
+            <div class="txt_field">
+                {{ form.middle_name(class="input", required=True) }}
+                <label>Отчество:</label>
+                <span></span>
+            </div>
+            <div class="txt_field">
+                {{ form.email(class="input", required=True) }}
+                <label>Почта:</label>
+                <span></span>
+            </div>
+            <div class="txt_field">
+                {{ form.password(class="input", required=True) }}
+                <label>Пароль:</label>
+                <span></span>
+            </div>
+            <div class="txt_field">
+                {{ form.r_password(class="input", required=True) }}
+                <label>Повторите пароль:</label>
+                <span></span>
+            </div>
+            {{ form.submit(class="submit") }}
+
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </form>
+    </div>
+{% endblock %}

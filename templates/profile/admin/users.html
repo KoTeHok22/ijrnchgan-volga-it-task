@@ -1,0 +1,118 @@
+{% extends "profile/profile_base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile/admin/users.css') }}">
+<style>
+
+</style>
+{% endblock %}
+
+{% block content %}
+<h2>Пользователи:</h2>
+<div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+        {% for account in accounts %}
+        <div class="swiper-slide" style="background-color: #AECBFA; border: 2px solid #8AADE6; cursor: pointer;" onclick="window.location.href='{{ url_for('user', id=account.id) }}';">
+            <div class="crutch">
+                <div class="slide-text-">
+                    <h3>{{ account.username }}</h3>
+                    <p class="slide-text-paragraph">{{ account.last_name }} {{ account.first_name }} {{ account.middle_name }}</p>
+                    <p class="slide-text-paragraph">{{ account.email }}</p>
+                    <p>ID Полик.: {{ account.hospital_id }}</p>
+                    <p>ID Доктора: {{ account.doctor_id }}</p>
+                    <p>Аккаунт зарегистрирован: {{ account.reg_time }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% if accounts|length > 3 %}
+        <div class="swiper-button-next"><img src="{{ url_for('static', filename='images/right.png') }}" alt=""></div>
+        <div class="swiper-button-prev"><img src="{{ url_for('static', filename='images/left.png') }}" alt=""></div>
+        <div class="swiper-pagination"></div>
+    {% endif %}
+</div>
+
+<h2>Поиск пользователя:</h2>
+<div class="search-container" style="display: flex;">
+    <div class="txt_field" style="width: 200px;">
+        <input type="text" id="searchInput" class="input" required="True">
+        <label>Запрос:</label>
+    </div>
+    <div class="button">
+        <button id="searchButton" style="cursor: pointer; border: 2px solid #adadad; border-radius: 14px; height: 40px; margin-top: 33px;">Найти</button>
+    </div>
+</div>
+
+
+<div class="swiper mySwiper2">
+    <div class="swiper-wrapper" id="searchResults">
+        
+    </div>
+    <div class="swiper-button-next"><img src="{{ url_for('static', filename='images/right.png') }}" alt=""></div>
+    <div class="swiper-button-prev"><img src="{{ url_for('static', filename='images/left.png') }}" alt=""></div>
+    <div class="swiper-pagination"></div>
+</div>
+
+<a href="{{ url_for('signup_admin') }}" id="reg">Зарегистрировать нового пользователя</a>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script>
+    const swiper = new Swiper(".mySwiper", {
+        slidesPerView: 3,
+        spaceBetween: 30,
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+    });
+
+    const swiper2 = new Swiper(".mySwiper2", {
+        slidesPerView: 3,
+        spaceBetween: 30,
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+    });
+
+    document.getElementById('searchButton').addEventListener('click', () => {
+        const query = document.getElementById('searchInput').value;
+        fetch(`/api/Accounts/Search?q=${query}`)
+            .then(response => response.json())
+            .then(accounts => {
+                const resultsContainer = document.getElementById('searchResults');
+                resultsContainer.innerHTML = '';
+                accounts.forEach(account => {
+                    const slide = document.createElement('div');
+                    slide.classList.add('swiper-slide');
+                    slide.style.backgroundColor = '#AECBFA';
+                    slide.style.border = '2px solid #8AADE6';
+                    slide.style.cursor = 'pointer';
+                    slide.innerHTML = `
+                        <div class="crutch">
+                            <div class="slide-text-">
+                                <h3>${account.username}</h3>
+                                <p class="slide-text-paragraph">${account.first_name} ${account.last_name} ${account.middle_name}</p>
+                                <p class="slide-text-paragraph">${account.email}</p>
+                                <p>ID Полик.: ${account.hospital_id}</p>
+                                <p>ID Доктора: ${account.doctor_id}</p>
+                                <p>Аккаунт зарегистрирован: ${account.reg_time}</p>
+                            </div>
+                        </div>
+                    `;
+                    slide.addEventListener('click', () => {
+                        window.location.href = `{{ url_for('user', id=0) }}`.replace('0', account.id);
+                    });
+                    resultsContainer.appendChild(slide);
+                    });
+                swiper2.update();
+            });
+    });
+</script>
+
+{% endblock %}

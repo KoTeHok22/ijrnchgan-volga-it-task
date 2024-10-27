@@ -1,0 +1,377 @@
+openapi: 3.0.0
+info:
+  title: Account Service API
+  version: 1.0.0
+  description: API for managing user accounts information.
+servers:
+  - url: http://localhost:5000
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        middle_name:
+          type: string
+        email:
+          type: string
+        hospital_id:
+          type: integer
+        doctor_id:
+          type: integer
+        user_role:
+          type: string
+        reg_time:
+          type: string
+          format: date-time
+        avatar:
+          type: string
+
+security:
+  - bearerAuth: []
+
+paths:
+  /api/Authentication/SignUp:
+    post:
+      summary: Sign up a new user
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                middle_name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                r_password:
+                  type: string
+      responses:
+        '302':
+          description: Redirect to /signin on success or /signup on error
+
+  /api/Authentication/SignIn:
+    post:
+      summary: Sign in an existing user
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                usermail:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '302':
+          description: Redirect to /profile on success or /signin on error
+        '400':
+          description: Refresh token is missing
+
+  /api/Authentication/SignOut:
+    post:
+      summary: Sign out the current user
+      responses:
+        '302':
+          description: Redirect to /signin
+
+  /api/Authentication/Validate:
+    get:
+      summary: Validate an access token
+      parameters:
+        - name: accessToken
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Token is valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                  user_id:
+                    type: integer
+        '401':
+          description: Token is invalid or expired
+        '400':
+          description: Token is missing
+
+  /api/Authentication/Refresh:
+    post:
+      summary: Refresh an access token
+      responses:
+        '200':
+          description: Access token refreshed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+        '401':
+          description: Refresh token is invalid or expired
+        '400':
+          description: Refresh token is missing
+
+  /api/Accounts/Me:
+    get:
+      summary: Get current user information
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+  /api/Accounts/Update:
+    put:
+      summary: Update current user information
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                current_password:
+                  type: string
+                  required: true
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                middle_name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                avatar:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Account updated successfully
+        '400':
+          description: Validation errors
+        '401':
+          description: Incorrect current password
+        '405':
+          description: Invalid request method
+
+
+  /api/Accounts/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: User ID
+    put:
+      summary: Update user account (admin only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                middle_name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                avatar:
+                  type: string
+                  format: binary
+                user_role:
+                  type: string
+      responses:
+        '200':
+          description: Account updated successfully
+        '400':
+          description: Validation errors
+    delete:
+      summary: Delete user account (admin only)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Account deleted successfully
+        '500':
+          description: Failed to delete account
+
+  /api/Accounts:
+    get:
+      summary: Get all user accounts (admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: from
+          schema:
+            type: integer
+          description: Offset for pagination
+        - in: query
+          name: count
+          schema:
+            type: integer
+          description: Number of accounts to retrieve
+      responses:
+        '200':
+          description: List of user accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      summary: Create new user account (admin only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                middle_name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                r_password:
+                  type: string
+      responses:
+        '302':
+          description: Redirect to /signup_admin on success or error
+
+  /api/Accounts/Search:
+    get:
+      summary: Search user accounts (admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: Search query
+      responses:
+        '200':
+          description: List of matching accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+
+  /api/Doctors:
+    get:
+      summary: Get all doctors
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: nameFilter
+          schema:
+            type: string
+          description: Filter doctors by name
+        - in: query
+          name: from
+          schema:
+            type: integer
+          description: Offset for pagination
+        - in: query
+          name: count
+          schema:
+            type: integer
+          description: Number of doctors to retrieve
+        - in: query
+          name: h_id
+          schema:
+            type: integer
+          description: Filter doctors by Hospital ID
+
+      responses:
+        '200':
+          description: List of doctors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+  /api/Doctors/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Doctor ID
+    get:
+      summary: Get doctor by ID
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Doctor information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Doctor not found

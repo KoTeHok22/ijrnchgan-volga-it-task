@@ -1,0 +1,143 @@
+openapi: 3.0.0
+info:
+  title: Hospital Service API
+  version: 1.0.0
+  description: API for managing hospital information.
+servers:
+  - url: http://localhost:5000
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Hospital:
+      type: object
+      properties:
+        id:
+          type: integer
+        hospital_name:
+          type: string
+        cabinets:
+          type: array
+          items:
+            type: string
+        phone:
+          type: string
+        email:
+          type: string
+        hospital_address:
+          type: string
+
+security:
+  - bearerAuth: []
+
+paths:
+  /api/Hospitals:
+    get:
+      summary: Get all hospitals
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: integer
+          description: Offset for pagination
+        - name: count
+          in: query
+          schema:
+            type: integer
+          description: Number of hospitals to retrieve
+      responses:
+        '200':
+          description: List of hospitals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Hospital'
+    post:
+      summary: Create a new hospital
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Hospital'
+      responses:
+        '201':
+          description: Hospital created successfully
+        '400':
+          description: Missing required fields
+        '500':
+          description: Failed to create hospital
+
+  /api/Hospitals/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Hospital ID
+    get:
+      summary: Get hospital by ID
+      responses:
+        '200':
+          description: Hospital information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hospital'
+        '404':
+          description: Hospital not found
+    put:
+      summary: Update hospital (admin only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Hospital'
+      responses:
+        '200':
+          description: Hospital updated successfully
+        '400':
+          description: No data provided
+        '500':
+          description: Failed to update hospital
+    delete:
+      summary: Soft delete hospital (admin only)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Hospital deleted successfully
+        '500':
+          description: Failed to delete hospital
+
+  /api/Hospitals/{id}/Rooms:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Hospital ID
+    get:
+      summary: Get hospital rooms
+      responses:
+        '200':
+          description: List of hospital rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '404':
+          description: Hospital not found

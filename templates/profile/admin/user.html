@@ -1,0 +1,118 @@
+{% extends "profile/profile_base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile/settings.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile/admin/user.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+{% endblock %}
+
+{% block content %}
+{% for category, message in get_flashed_messages(with_categories=true) %}
+    <div class="flash {{ category }}">{{ message }}</div>
+{% endfor %}
+<div class="center">
+  <div class="settings">
+    <h1>Настройки</h1>
+    <form id="settingsForm">
+        {{ form.hidden_tag() }}
+        <div class="txt_field">
+            {{ form.last_name(class="input", required=True) }}
+            <label>Фамилия:</label>
+            <span></span>
+        </div>
+        <div class="txt_field">
+            {{ form.first_name(class="input", required=True) }}
+            <label>Имя:</label>
+            <span></span>
+        </div>
+        <div class="txt_field">
+            {{ form.middle_name(class="input", required=True) }}
+            <label>Отчество:</label>
+            <span></span>
+        </div>
+        <div class="txt_field">
+            {{ form.email(class="input", required=True) }}
+            <label>Email:</label>
+            <span></span>
+        </div>
+        <div class="role">
+            <label>Роль:</label>
+            {{ form.user_role(class="input", required=True) }}
+            <span></span>
+        </div>
+        <div class="txt_field">
+            {{ form.password(class="input") }}
+            <label>Новый пароль:</label>
+            <span></span>
+        </div>
+        <div class="txt_field">
+            {{ form.confirm_password(class="input") }}
+            <label>Подтвердите пароль:</label>
+            <span></span>
+        </div>
+        <label style="color: #2691d9;">Аватар:</label>
+        <div style="display: flex; justify-content: center;">
+          <img src="{{ url_for('static', filename=user.avatar) }}" alt="Аватар" style="width: 100px;">
+        </div>
+        {{ form.avatar(class="input") }}
+        
+        {{ form.submit(class="submit") }}
+    </form>
+    <form id="deleteUserForm">
+      <button type="submit" class="delete-button">Удалить</button>
+    </form>
+  </div>
+</div>
+<script>
+$(function() {
+  $('#settingsForm').submit(function(event) {
+    event.preventDefault();
+
+    var formData = new FormData(this);
+
+    axios.put('/api/Accounts/{{ user.id }}', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then(function(response) {
+      console.log(response.data);
+      location.reload();
+    })
+    .catch(function(error) {
+      console.error(error.response.data);
+      if (error.response && error.response.status === 401) {
+        console.log('Ошибка авторизации: ' + error.response.data.error);
+      }
+      if (error.response && error.response.status === 400) {
+        var errors = error.response.data.errors;
+        for (var field in errors) {
+          var errorMessages = errors[field];
+          for (var i = 0; i < errorMessages.length; i++) {
+            console.log('Ошибка валидации поля ' + field + ': ' + errorMessages[i]);
+          }
+        }
+      }
+      location.reload();
+    });
+  });
+});
+
+$('#deleteUserForm').submit(function(event) {
+    event.preventDefault();
+    
+    axios.delete('/api/Accounts/{{ user.id }}')
+    .then(function(response) {
+        console.log(response.data);
+        window.location.href = '/profile/accounts';
+    })
+    .catch(function(error) {
+        console.error(error);
+        location.reload();
+    });
+});
+</script>
+
+
+
+{% endblock %}

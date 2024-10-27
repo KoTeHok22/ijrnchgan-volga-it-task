@@ -1,0 +1,165 @@
+{% extends "profile/profile_base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile/profile.css') }}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js" integrity="sha512-Ysw1DcK1P+uYLqprEAzNQJP+J4hTx4t/3X2nbVwszao8wD+9afLjBQYjz7Uk4ADP+Er++mJoScI42ueGtQOzEA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock %}
+
+{% block content %}
+<h2>Актуально:</h2>
+<div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+        {% if actual %}
+            {% for slide in actual %}
+                <a href="{{ slide.link }}" class="swiper-slide" style="background-color: {{ slide.color }}; border: 2px solid {{ slide['border-color'] }};">
+                    <div class="slide-text">
+                        <h3>{{ slide.title }}</h3>
+                    </div>
+                    <div class="slide-image">
+                        {% if slide.icon %}
+                            <img src="{{ slide.icon }}" alt="{{ slide.title }} Icon">
+                        {% endif %}
+                    </div>
+                </a>
+            {% endfor %}
+        {% else %}
+            <a href="#" class="swiper-slide" style="background-color: #fdff84; border: 2px solid #ffe657;">
+                <div class="slide-text">Нет актуальных</div>
+                <div class="slide-image"></div>
+            </a> 
+        {% endif %}
+    </div>
+    {% if actual|length > 3 %}
+    <div class="swiper-button-next"><img src="{{ url_for('static', filename='images/right.png') }}" alt=""></div>
+    <div class="swiper-button-prev"><img src="{{ url_for('static', filename='images/left.png') }}" alt=""></div>
+    <div class="swiper-pagination"></div>
+    {% endif %}
+</div>
+
+
+<h2 id="recommendations">Рекомендации:</h2>
+<div class="swiper mySwiper1">
+    <div class="swiper-wrapper">
+        {% if recommendations %}
+            {% for slide in recommendations %}
+                <a href="{{ slide.link }}" class="swiper-slide" style="background-color: {{ slide.color }}; border: 2px solid {{ slide['border-color'] }};">
+                    <div class="crutch">
+                        <div class="slide-text-">
+                            <h3>{{ slide.title }}</h3>
+                            <p class="slide-text-paragraph">{{ slide.text }}</p>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        {% else %}
+            <a href="#" class="swiper-slide" style="background-color: #fdff84; border: 2px solid #ffe657;">
+                <div class="slide-text">Нет рекомендаций</div>
+                <div class="slide-image"></div>
+            </a> 
+        {% endif %}
+    </div>
+    {% if recommendations|length > 3 %}
+    <div class="swiper-pagination"></div>
+    <div class="swiper-button-next"><img src="{{ url_for('static', filename='images/right.png') }}" alt=""></div>
+    <div class="swiper-button-prev"><img src="{{ url_for('static', filename='images/left.png') }}" alt=""></div>
+    {% endif %}
+</div>
+
+<h2 id="appointments">Ваши записи:</h2>
+<div class="swiper mySwiper1">
+    <div class="swiper-wrapper">
+        {% if appointments %}
+            {% for slide in appointments %}
+                <a href="{{ slide.link }}" class="swiper-slide" style="background-color: {{ slide.color }}; border: 2px solid {{ slide['border-color'] }};">
+                    <div class="crutch">
+                        <div class="slide-text-">
+                            <h3>Запись на {{ slide.time }}</h3>
+                            <p class="slide-text-paragraph">
+                                ФИО доктора: {{ slide.full_name }} <br>
+                                Кабинет: {{ slide.cabinet }}
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        {% else %}
+            <a href="#" class="swiper-slide" style="background-color: #fdff84; border: 2px solid #ffe657;">
+                <div class="slide-text">Нет записей</div>
+                <div class="slide-image"></div>
+            </a> 
+        {% endif %}
+    </div>
+    {% if appointments|length > 3 %}
+    <div class="swiper-button-next"><img src="{{ url_for('static', filename='images/right.png') }}" alt=""></div>
+    <div class="swiper-button-prev"><img src="{{ url_for('static', filename='images/left.png') }}" alt=""></div>
+    <div class="swiper-pagination"></div>
+    {% endif %}
+</div>
+
+
+<script>
+    new Swiper('.mySwiper', {
+        direction: 'horizontal',
+        slidesPerView: 1,
+        spaceBetween: 10,
+        loop: false,
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        breakpoints: {
+            768: {
+                slidesPerView: 2,
+            },
+            1024: {
+                slidesPerView: 3,
+            },
+        }
+    });
+    new Swiper('.mySwiper1', {
+        direction: 'horizontal',
+        slidesPerView: 1,
+        spaceBetween: 10,
+        loop: false,
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        breakpoints: {
+            768: {
+                slidesPerView: 2,
+            },
+            1024: {
+                slidesPerView: 3,
+            },
+        }
+    });
+    new Swiper('.mySwiper2', {
+        direction: 'horizontal',
+        slidesPerView: 1,
+        spaceBetween: 10,
+        loop: false,
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        breakpoints: {
+            768: {
+                slidesPerView: 2,
+            },
+            1024: {
+                slidesPerView: 3,
+            },
+        }
+    });
+</script>
+{% endblock %}

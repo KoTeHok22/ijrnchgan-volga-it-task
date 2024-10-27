@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js" integrity="sha512-Ysw1DcK1P+uYLqprEAzNQJP+J4hTx4t/3X2nbVwszao8wD+9afLjBQYjz7Uk4ADP+Er++mJoScI42ueGtQOzEA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <title>Профиль</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile/profile_base.css') }}">
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+
+    <div class="container">
+        <div class="profile-sidebar">
+            <div class="user-info">
+                <img id="avatar" src="{{ url_for('static', filename='images/users/avatars/default.jpg') }}">
+                <p id="full_name"></p>
+                <p id="email"></p>
+
+                <div class="container_hr"><div class="hr"></div></div>
+        
+                <nav>
+                    <p class="nav-btn"><a href="{{ url_for('profile') }}" class="animate clip-path">Главная</a></p>
+                    <p class="nav-btn"><a href="" class="animate clip-path">Направления</a></p>
+                    <p class="nav-btn"><a href="" class="animate clip-path">Расписание</a></p>
+                    <p class="nav-btn"><a href="{{ url_for('settings') }}" class="animate clip-path">Настройки</a></p>
+                </nav>
+                
+            </div>
+            <div class="footer-links">
+                <a href="#">Обратная связь</a>
+                <div class="container_hr"><div class="hr"></div></div>
+                <button id="signOutButton" style="cursor: pointer;">Выход</button>
+            </div>
+        </div>
+        <div class="content-wrapper">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+    
+    <script>
+        $(document).ready(function() {
+            $.get('/api/Accounts/Me', function(data) {
+                $('#avatar').attr('src', data.avatar);
+                $('#full_name').text(data.last_name + ' ' + data.first_name + ' ' + data.middle_name);
+                $('#email').text(data.email);
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#signOutButton').click(function() {
+                $.ajax({
+                    url: '/api/Authentication/SignOut',
+                    type: 'POST',
+                    success: function(response) {
+                        console.log('Sign out successful:', response);
+                        location.reload();
+                    },
+                    error: function(error) {
+                        console.error('Sign out failed:', error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

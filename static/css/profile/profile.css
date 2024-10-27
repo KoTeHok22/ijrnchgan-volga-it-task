@@ -1,0 +1,69 @@
+.swiper {
+    width: 100%;
+    height: 200px;
+    margin-top: 28px;
+}
+
+.swiper-slide {
+    width: 360px;
+    height: 175px;
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
+    padding: 20px;
+    border-radius: 14px;
+    box-sizing: border-box; 
+    line-height: 1.5;
+}
+
+.slide-text {
+    width: 50%;
+    font-weight: 300;
+    font-size: 20px;
+    text-align: left;
+}
+
+
+.slide-image img {
+    height: 116px; 
+}
+
+.swiper-button-prev, .swiper-button-next {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 50%;
+    color: black; 
+    font-size: 30px;
+    user-select: none;
+    z-index: 100;
+}
+
+.swiper-button-prev img, .swiper-button-next img {
+    width: 50%;
+}
+
+.slide-text- {
+    font-size: 18px;
+    text-align: left;
+}
+
+.crutch {
+    width: 100%;
+    height: 100%;
+}
+
+.slide-text-paragraph {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+
+#recommendations, #appointments {
+    margin-top: 50px;
+}

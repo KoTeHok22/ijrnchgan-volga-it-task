@@ -1,0 +1,329 @@
+openapi: 3.0.0
+info:
+  title: Timetable Service API
+  version: 1.0.0
+  description: API for managing timetable entries and appointments.
+servers:
+  - url: http://localhost:5000
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    TimetableEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+        hospitalId:
+          type: integer
+        doctorId:
+          type: integer
+        from:
+          type: string
+          format: date-time
+        to:
+          type: string
+          format: date-time
+        room:
+          type: string
+    Appointment:
+      type: object
+      properties:
+        id:
+          type: integer
+        timetable_id:
+          type: integer
+        patient_id:
+          type: integer
+        time:
+          type: string
+          format: date-time
+    ScheduleEntry:
+      type: object
+      properties:
+        doctorId:
+          type: integer
+        from:
+          type: string
+          format: date-time
+        to:
+          type: string
+          format: date-time
+        room:
+          type: string
+
+
+security:
+  - bearerAuth: []
+
+paths:
+  /api/Timetable:
+    post:
+      summary: Create a new timetable entry
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimetableEntry'
+      responses:
+        '201':
+          description: Timetable entry created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  message:
+                    type: string
+        '400':
+          description: Missing required fields or invalid datetime format
+        '500':
+          description: Failed to create timetable entry
+
+  /api/Timetable/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Timetable entry ID
+    put:
+      summary: Update timetable entry
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimetableEntry'
+      responses:
+        '200':
+          description: Timetable entry updated
+        '400':
+          description: Missing required fields, invalid datetime format, or appointments exist.
+
+    delete:
+      summary: Delete timetable entry
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Timetable entry deleted
+        '400':
+          description: Appointments exist
+
+  /api/Timetable/Hospital/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Hospital ID
+      - in: query
+        name: from
+        schema:
+          type: string
+          format: date-time
+        required: true
+        description: Start date-time (ISO 8601)
+      - in: query
+        name: to
+        schema:
+          type: string
+          format: date-time
+        required: true
+        description: End date-time (ISO 8601)
+    get:
+      summary: Get hospital timetable
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Hospital timetable
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduleEntry'
+        '400':
+          description: Invalid datetime format
+    delete:
+      summary: Delete hospital timetable entries
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Hospital schedule entries deleted
+        '500':
+          description: Hospital schedule entries not deleted
+
+
+  /api/Timetable/Doctor/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Doctor ID
+      - in: query
+        name: from
+        schema:
+          type: string
+          format: date-time
+        required: true
+        description: Start date-time (ISO 8601)
+      - in: query
+        name: to
+        schema:
+          type: string
+          format: date-time
+        required: true
+        description: End date-time (ISO 8601)
+    get:
+      summary: Get doctor timetable
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Doctor timetable
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduleEntry'
+        '400':
+          description: Invalid datetime format
+    delete:
+      summary: Delete doctor timetable entries
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Doctor schedule entries deleted
+        '500':
+          description: Doctor schedule entries not deleted
+
+  /api/Timetable/Hospital/{id}/Room/{room}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Hospital ID
+      - in: path
+        name: room
+        schema:
+          type: string
+        required: true
+        description: Room number
+      - in: query
+        name: from
+        schema:
+          type: string
+          format: date-time
+        required: true
+        description: Start date-time (ISO 8601)
+      - in: query
+        name: to
+        schema:
+          type: string
+          format: date-time
+        required: true
+        description: End date-time (ISO 8601)
+    get:
+      summary: Get hospital room timetable
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Hospital room timetable
+          content:
+            application/json:
+              schema:
+                 type: array
+                 items:
+                   $ref: '#/components/schemas/ScheduleEntry'
+        '400':
+          description: Invalid datetime format
+
+  /api/Timetable/{id}/Appointments:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Timetable entry ID
+    get:
+      summary: Get free appointment slots
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of free appointment slots
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: date-time
+    post:
+      summary: Create appointment
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                time:
+                  type: string
+                  format: date-time
+      responses:
+        '201':
+          description: Appointment created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        '400':
+          description: Invalid datetime format or error creating appointment
+
+  /api/Appointment/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Appointment ID
+    delete:
+      summary: Delete appointment
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Appointment deleted
+        '404':
+          description: Appointment not found
+        '500':
+          description: Appointment not deleted or not the owner
