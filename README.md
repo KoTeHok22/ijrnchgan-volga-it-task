@@ -13,7 +13,7 @@
 # Аккаунты по умолчанию:
 
 Логин   | Пароль   | Роль
--------|----------|-------
+--------|----------|-------
 user    | user     | user
 doctor  | doctor   | doctor
 manager | manager  | manager
