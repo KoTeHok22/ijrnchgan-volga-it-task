@@ -9,12 +9,16 @@
 По адресу http://localhost:5000/ должна появиться надпись YES  
 Вы великолепны!  
   
-# Аккаунты по умолчанию:  
-Логин   | Пароль  | Роль  
-user    | user    | user  
-doctor  | doctor  | doctor  
-manager | manager | manager  
-admin   | admin   | admin  
+<pre>
+# Аккаунты по умолчанию:
+
+Логин   | Пароль   | Роль
+-------|----------|-------
+user    | user     | user
+doctor  | doctor   | doctor
+manager | manager  | manager
+admin   | admin    | admin
+</pre>
   
 # Доступные адреса:  
 http://localhost:5000/SignIn - Вход в аккаунт  
