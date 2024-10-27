@@ -8,7 +8,28 @@
 Переименовать файл "env" в ".env"  
 Выполнить команду "docker-compose up -d"   
 По адресу http://localhost:5000/ должна появиться надпись YES  
-Вы великолепны!  
+Вы великолепны!
+
+# Доступ по API:  
+Для доступа по API на защищенные адреса в cookies нужно указать access_token, в headers 'X-Requested-With': 'XMLHttpRequest',
+```python
+cookies = {
+    'access_token': 'token',
+}
+
+headers = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+    'X-Requested-With': 'XMLHttpRequest',
+    'Content-Type': 'application/json',
+}
+```  
+  
+Токен с админским доступом (При условии, что секретный ключ не был изменен в .env):  
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MjkxMDc5NDUsInN1YiI6NCwidHlwZSI6InBlcm1hbmVudF9hY2Nlc3MifQ.Hv-LThx114PGzJhXWjeuzNpR6IAqv2eGQzPHKh0lTzQ
+```  
+
 
 # Аккаунты по умолчанию:
 <pre>
