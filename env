@@ -1,0 +1,5 @@
+DB_URL=localhost
+DB_NAME=volga-it-db
+DB_USER=volga-it
+DB_PASSWORD=Volga-IT-DB-Password
+SECRET_KEY=Volga-IT-SECRET-KEY-o3nmvhtsah32n49g7wsh
