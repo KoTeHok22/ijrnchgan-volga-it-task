@@ -26,7 +26,7 @@ headers = {
 }
 ```  
   
-Токен с админским доступом (При условии, что секретный ключ не был изменен в .env):  
+Вечный токен с админским доступом (При условии, что секретный ключ не был изменен в .env):  
 ```
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MjkxMDc5NDUsInN1YiI6NCwidHlwZSI6InBlcm1hbmVudF9hY2Nlc3MifQ.Hv-LThx114PGzJhXWjeuzNpR6IAqv2eGQzPHKh0lTzQ
 ```  
